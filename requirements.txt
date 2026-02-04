@@ -2,5 +2,7 @@ streamlit
 pandas
 numpy
 joblib
-langchain_openai
-scikit-learn
+langchain-openai
+langchain-core
+gTTS
+streamlit-mic-recorder
