@@ -6,6 +6,7 @@ import os
 import warnings
 import io
 import base64
+import zipfile # 압축 해제를 위해 추가
 
 # --- AI 및 음성 기능을 위한 라이브러리 추가 ---
 from langchain_openai import ChatOpenAI
@@ -46,14 +47,23 @@ def get_image_base64(path):
    return base64.b64encode(img_file.read()).decode()
  return None
 
-# --- [수정 부분] 모델 로드 및 AttributeError 방어 로직 추가 ---
+# --- [수정 부분] ZIP 압축 해제 로직 포함 모델 로드 ---
 @st.cache_resource
 def load_models():
- if not os.path.exists('health_models.pkl'):
-  st.error("❌ 모델 파일(health_models.pkl)이 없습니다.")
-  st.stop()
+ zip_path = 'health_models.zip'
+ model_path = 'health_models.pkl'
  
- with open('health_models.pkl', 'rb') as f:
+ # 1. 만약 pkl 파일이 없고 zip 파일만 있다면 압축 해제 실행
+ if not os.path.exists(model_path):
+  if os.path.exists(zip_path):
+   with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    zip_ref.extractall('.')
+  else:
+   st.error("❌ 모델 파일(health_models.pkl 또는 health_models.zip)이 없습니다.")
+   st.stop()
+ 
+ # 2. 모델 로드 및 AttributeError 방어 로직
+ with open(model_path, 'rb') as f:
   models_package = pickle.load(f)
  
  # LogisticRegression의 multi_class 속성 누락 오류 해결을 위한 패치
