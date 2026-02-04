@@ -6,3 +6,4 @@ langchain-openai
 langchain-core
 gTTS
 streamlit-mic-recorder
+imblearn
