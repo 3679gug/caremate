@@ -100,7 +100,7 @@ if 'user_data' not in st.session_state:
  st.session_state.user_data = {
   "name": "", "gender": "남성", "age": 70, "height": 160, "weight": 60,
   "diseases": [], "family_history": [], "edu": "대졸 이상", "marry": "기혼",
-  "incm": "상(4분위)", "alcohol": "비음주", "sleep_time": 7
+  "incm": "상(500만원~)", "alcohol": "비음주", "sleep_time": 7
  }
 if 'survey_answers' not in st.session_state:
  st.session_state.survey_answers = {"PHQ9": {}, "GAD7": {}, "BP1": {}, "EQ5D": {}}
@@ -181,7 +181,7 @@ def get_predictions():
  alc_map = {"비음주": 0, "적정 음주": 1, "고위험 음주": 2}
  edu_map = {"초졸 이하": 1, "중졸": 2, "고졸": 3, "대졸 이상": 4}
  marry_map = {"기혼": 1, "미혼": 2, "이혼/사별/기타": 3}
- incm_map = {"하(1분위)": 1, "중하(2분위)": 2, "중상(3분위)": 3, "상(4분위)": 4}
+ incm_map = {"하(~244 만원)": 1, "중하(244~356 만원)": 2, "중상(244~356 만원)": 3, "상(500만원~)": 4}
  
  full_data = {
   'age': u['age'], 
@@ -293,7 +293,7 @@ elif st.session_state.step == 1:
   with col_c: weight = st.number_input("몸무게 (kg)", 20, 200, st.session_state.user_data["weight"])
   
   col_d, col_e, col_f = st.columns(3)
-  with col_d: incm = st.selectbox("소득 수준(4분위 기준)", ["하(1분위)", "중하(2분위)", "중상(3분위)", "상(4분위)"], index={"하(1분위)":0, "중하(2분위)":1, "중상(3분위)":2, "상(4분위)":3}.get(st.session_state.user_data["incm"], 3))
+  with col_d: incm = st.selectbox("소득 수준(월소득 기)", ["하(~244 만원)", "중하(244~356 만원)", "중상(356~500 만원)", "상(500만원~)"], index={"하(1분위)":0, "중하(2분위)":1, "중상(3분위)":2, "상(4분위)":3}.get(st.session_state.user_data["incm"], 3))
   with col_e: 
    alc_guide = "7잔" if gender == "남성" else "5잔"
    alcohol = st.radio("음주 습관", ["비음주", "적정 음주", "고위험 음주"], index=["비음주", "적정 음주", "고위험 음주"].index(st.session_state.user_data.get("alcohol", "비음주")), horizontal=True)
@@ -511,3 +511,4 @@ elif st.session_state.step == 4:
     for key in [k for k in st.session_state.keys() if k != 'db']: del st.session_state[key]
     st.rerun()
   st.markdown('</div>', unsafe_allow_html=True)
+
