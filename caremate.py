@@ -386,8 +386,8 @@ elif st.session_state.step == 3:
 
  # 2. GAD-7 (불안)
  if gad <= 4: gad_text = "정상"
- elif gad <= 9: gad_text = "경도 불안"
- elif gad <= 14: gad_text = "중등도 불안"
+ elif gad <= 9: gad_text = "가벼운 불안"
+ elif gad <= 14: gad_text = "중간 정도의 불안"
  else: gad_text = "심한 불안"
 
  # 3. 스트레스
@@ -542,3 +542,4 @@ elif st.session_state.step == 4:
     for key in [k for k in st.session_state.keys() if k != 'db']: del st.session_state[key]
     st.rerun()
   st.markdown('</div>', unsafe_allow_html=True)
+
