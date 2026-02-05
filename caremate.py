@@ -21,7 +21,6 @@ warnings.filterwarnings("ignore")
 # ---------------------------------------------------------
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 # OPENAI_API_KEY = ""
-
 # --- 디자인 설정 ---
 STYLE_CONFIG = {
  "corner_radius": "25px",      
@@ -377,12 +376,38 @@ elif st.session_state.step == 3:
  u = st.session_state.user_data
  bmi = u['weight'] / ((u['height']/100)**2)
  phq, gad, bp1_score, eq5d = calculate_scores()
+
+ # --- [수정 부분] 정신건강 텍스트 변환 로직 ---
+ # 1. PHQ-9 (우울)
+ if phq <= 4: phq_text = "정상"
+ elif phq <= 9: phq_text = "가벼운 우울증"
+ elif phq <= 19: phq_text = "중간 정도의 우울증"
+ else: phq_text = "심한 우울증"
+
+ # 2. GAD-7 (불안)
+ if gad <= 4: gad_text = "정상"
+ elif gad <= 9: gad_text = "경도 불안"
+ elif gad <= 14: gad_text = "중등도 불안"
+ else: gad_text = "심한 불안"
+
+ # 3. 스트레스
+ stress_map = {1: "낮음", 2: "보통", 3: "높음", 4: "매우 높음"}
+ stress_text = stress_map.get(bp1_score, "보통")
+
+ # 4. 삶의 질 (EQ-5D)
+ if eq5d == 1: eq_text = "매우 높음"
+ elif eq5d >= 0.899: eq_text = "높음"
+ elif eq5d >= 0.8: eq_text = "보통"
+ elif eq5d >= 0.7: eq_text = "낮음"
+ else: eq_text = "매우 낮음"
+
  st.markdown(f"""
  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
   <h3 style="margin:0; color: white;">👤 {u['name']}님의 건강 프로필</h3>
   <p style="margin:5px 0; color: white;">나이: {u['age']}세 | 성별: {u['gender']} | BMI: {bmi:.1f}</p>
-  <p style="margin:5px 0; color: white;">우울: {phq}점 | 불안: {gad}점 | 스트레스: {bp1_score}점 | 삶의 질: {eq5d:.2f}</p>
+  <p style="margin:5px 0; color: white;">우울: <b>{phq_text}</b>({phq}점) | 불안: <b>{gad_text}</b>({gad}점)</p>
+  <p style="margin:5px 0; color: white;">스트레스: <b>{stress_text}</b> | 삶의 질: <b>{eq_text}</b>({eq5d}점)</p>
  </div>
  """, unsafe_allow_html=True)
  
@@ -413,8 +438,14 @@ elif st.session_state.step == 3:
    <div style="width: 100%; background-color: #f1f5f9; border-radius: 10px; height: 14px; overflow: hidden;">
     <div style="width: {score}%; background-color: {theme['color']}; height: 100%; border-radius: 10px;"></div>
    </div>
-   <p style="margin-top: 10px; color: #64748b; font-size: 0.9rem;">발병 확률: {prob:.1%} | 기준 임계값: {threshold:.1%}</p>
-  </div>
+   <div style="margin-bottom: 15px;">
+ <p style="margin-top: 10px; color: #64748b; font-size: 0.9rem;">
+  발병 확률: {prob:.1%} | 기준 임계값: {threshold:.1%}
+ </p>
+ <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px; line-height: 1.4;">
+  * 높음: 임계값 이상 | 중간: 임계값의 70% 이상 | 낮음: 70% 미만
+ </p>
+</div>
   """, unsafe_allow_html=True)
  
  st.session_state.risks_summary = ", ".join(risk_summary_text) if risk_summary_text else "정상"
@@ -511,5 +542,3 @@ elif st.session_state.step == 4:
     for key in [k for k in st.session_state.keys() if k != 'db']: del st.session_state[key]
     st.rerun()
   st.markdown('</div>', unsafe_allow_html=True)
-
-
