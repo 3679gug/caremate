@@ -407,7 +407,7 @@ elif st.session_state.step == 3:
   <h3 style="margin:0; color: white;">👤 {u['name']}님의 건강 프로필</h3>
   <p style="margin:5px 0; color: white;">나이: {u['age']}세 | 성별: {u['gender']} | BMI: {bmi:.1f}</p>
   <p style="margin:5px 0; color: white;">우울: <b>{phq_text}</b>({phq}점) | 불안: <b>{gad_text}</b>({gad}점)</p>
-  <p style="margin:5px 0; color: white;">스트레스: <b>{stress_text}</b> | 삶의 질: <b>{eq_text}</b>({eq5d}점)</p>
+  <p style="margin:5px 0; color: white;">스트레스: <b>{stress_text}</b> | 삶의 질: <b>{eq_text}</b>({eq5d:.3f}점)</p>
  </div>
  """, unsafe_allow_html=True)
  
@@ -542,4 +542,5 @@ elif st.session_state.step == 4:
     for key in [k for k in st.session_state.keys() if k != 'db']: del st.session_state[key]
     st.rerun()
   st.markdown('</div>', unsafe_allow_html=True)
+
 
