@@ -372,7 +372,7 @@ elif st.session_state.step == 2:
 
 # --- STEP 3: AI 분석 리포트 ---
 elif st.session_state.step == 3:
- st.markdown("<h2 style='text-align:center; margin-bottom:30px;'>📊 AI 건강 분석 리포트</h2>", unsafe_allow_html=True)
+ st.markdown("<h2 style='text-align:center; margin-bottom:30px;'>📊 개인 건강 분석 리포트</h2>", unsafe_allow_html=True)
  u = st.session_state.user_data
  bmi = u['weight'] / ((u['height']/100)**2)
  phq, gad, bp1_score, eq5d = calculate_scores()
@@ -542,5 +542,6 @@ elif st.session_state.step == 4:
     for key in [k for k in st.session_state.keys() if k != 'db']: del st.session_state[key]
     st.rerun()
   st.markdown('</div>', unsafe_allow_html=True)
+
 
 
