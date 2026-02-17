@@ -8,3 +8,4 @@ gTTS
 streamlit-mic-recorder
 imblearn
 xgboost
+lightgbm
